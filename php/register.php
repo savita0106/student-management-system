@@ -53,20 +53,24 @@ $stmt->bind_param(
     $pswd
 );
 
-if ($stmt->execute()) {
+try {
 
-    $session_id = "session:" . uniqid();
+    if ($stmt->execute()) {
 
-    echo json_encode([
-        "status" => "success",
-        "session_id" => $session_id
-    ]);
+        $session_id = "session:" . uniqid();
 
-} else {
+        echo json_encode([
+            "status" => "success",
+            "session_id" => $session_id
+        ]);
+
+    }
+
+} catch (mysqli_sql_exception $e) {
 
     echo json_encode([
         "status" => "failed",
-        "message" => "registration failed or email already exists"
+        "message" => "email already exists"
     ]);
 
 }
