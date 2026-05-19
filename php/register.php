@@ -2,11 +2,17 @@
 
 header("Content-Type: application/json");
 
-$conn = mysqli_connect(
-    "localhost",
-    "root",
-    "",
-    "reg_db"
+$conn = mysqli_init();
+
+mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
+
+mysqli_real_connect(
+    $conn,
+    getenv("DB_HOST"),
+    getenv("DB_USER"),
+    getenv("DB_PASSWORD"),
+    getenv("DB_NAME"),
+    getenv("DB_PORT")
 );
 
 if (!$conn) {
@@ -19,6 +25,17 @@ if (!$conn) {
     exit();
 
 }
+
+$table_sql = "
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100) UNIQUE,
+    pswd VARCHAR(100)
+)
+";
+
+mysqli_query($conn, $table_sql);
 
 $name = $_POST["name"];
 $email = $_POST["email"];
@@ -39,18 +56,6 @@ $stmt->bind_param(
 if ($stmt->execute()) {
 
     $session_id = "session:" . uniqid();
-
-    $redis = new Redis();
-
-    $redis->connect(
-        "127.0.0.1",
-        6379
-    );
-
-    $redis->set(
-        $session_id,
-        $email
-    );
 
     echo json_encode([
         "status" => "success",
