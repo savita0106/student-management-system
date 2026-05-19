@@ -2,11 +2,17 @@
 
 header("Content-Type: application/json");
 
-$conn = mysqli_connect(
-    "localhost",
-    "root",
-    "",
-    "reg_db"
+$conn = mysqli_init();
+
+mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
+
+mysqli_real_connect(
+    $conn,
+    getenv("DB_HOST"),
+    getenv("DB_USER"),
+    getenv("DB_PASSWORD"),
+    getenv("DB_NAME"),
+    getenv("DB_PORT")
 );
 
 if (!$conn) {
@@ -21,12 +27,10 @@ if (!$conn) {
 }
 
 $email = $_POST["email"];
-
 $pswd = $_POST["pswd"];
 
 $stmt = $conn->prepare(
-    "select * from users
-     where email = ? and pswd = ?"
+    "select * from users where email = ? and pswd = ?"
 );
 
 $stmt->bind_param(
@@ -41,27 +45,11 @@ $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
 
-    $user = $result->fetch_assoc();
-
-    $session_id =
-    "session:" . uniqid();
-
-    $redis = new Redis();
-
-    $redis->connect(
-        "127.0.0.1",
-        6379
-    );
-
-    $redis->set(
-        $session_id,
-        $email
-    );
+    $session_id = "session:" . uniqid();
 
     echo json_encode([
         "status" => "success",
-        "session_id" => $session_id,
-        "name" => $user["name"]
+        "session_id" => $session_id
     ]);
 
 } else {
