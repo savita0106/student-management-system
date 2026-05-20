@@ -52,11 +52,32 @@ $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
 
+    $row = $result->fetch_assoc();
+
     $session_id = "session:" . uniqid();
+
+    $redis = new Redis();
+
+    $redis->connect(
+        getenv("REDIS_HOST"),
+        (int)getenv("REDIS_PORT")
+    );
+
+    $redis->auth([
+        getenv("REDIS_USER"),
+        getenv("REDIS_PASSWORD")
+    ]);
+
+    $redis->set(
+        $session_id,
+        $row["email"]
+    );
 
     echo json_encode([
         "status" => "success",
-        "session_id" => $session_id
+        "session_id" => $session_id,
+        "name" => $row["name"],
+        "email" => $row["email"]
     ]);
 
 } else {

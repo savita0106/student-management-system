@@ -10,9 +10,14 @@ $session_id = $_POST["session_id"];
 $redis = new Redis();
 
 $redis->connect(
-    "127.0.0.1",
-    6379
+    getenv("REDIS_HOST"),
+    (int)getenv("REDIS_PORT")
 );
+
+$redis->auth([
+    getenv("REDIS_USER"),
+    getenv("REDIS_PASSWORD")
+]);
 
 $email = $redis->get($session_id);
 

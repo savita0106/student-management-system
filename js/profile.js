@@ -1,22 +1,13 @@
 $(document).ready(function () {
 
-    console.log("profile js loaded");
-
-    $("#saveProfile").click(function () {
-
-        console.log("save button clicked");
-
-    });
-
     let session_id = localStorage.getItem("session_id");
+    let name = localStorage.getItem("name");
 
     if (session_id == null) {
 
         window.location.href = "login.html";
 
     }
-
-    let name = localStorage.getItem("name");
 
     $("#welcomeName").html(
         "Welcome " + name + "!"
@@ -105,60 +96,55 @@ $(document).ready(function () {
 
     });
 
-});
+    $("#updateProfile").click(function () {
 
-$("#updateProfile").click(function () {
+        let age = $("#age").val();
+        let dob = $("#dob").val();
+        let contact = $("#contact").val();
 
-    console.log("update button clicked");
+        $.ajax({
 
-    let session_id = localStorage.getItem("session_id");
+            url: "../php/profile.php",
 
-    let age = $("#age").val();
-    let dob = $("#dob").val();
-    let contact = $("#contact").val();
-    
-    $.ajax({
+            type: "POST",
 
-        url: "../php/profile.php",
+            data: {
+                action: "save_profile",
+                session_id: session_id,
+                age: age,
+                dob: dob,
+                contact: contact
+            },
 
-        type: "POST",
+            success: function (response) {
 
-        data: {
-            action: "save_profile",
-            session_id: session_id,
-            age: age,
-            dob: dob,
-            contact: contact
-        },
+                if (response.status == "success") {
 
-        success: function (response) {
+                    $("#result").html("profile updated");
 
-            if (response.status == "success") {
+                    $("#profileData").html(
+                        "<h4>saved details</h4>" +
+                        "<p>age: " + age + "</p>" +
+                        "<p>dob: " + dob + "</p>" +
+                        "<p>contact: " + contact + "</p>"
+                    );
 
-                $("#result").html("profile updated");
+                } else {
 
-                $("#profileData").html(
-                    "<h4>Saved details:</h4>" +
-                    "<p>age: " + age + "</p>" +
-                    "<p>dob: " + dob + "</p>" +
-                    "<p>contact: " + contact + "</p>"
-                );
+                    $("#result").html(response.message);
 
-            } else {
+                }
 
-                $("#result").html(response.message);
+            },
+
+            error: function (xhr) {
+
+                $("#result").html(xhr.responseText);
 
             }
 
-        },
-
-        error: function (xhr) {
-
-            $("#result").html(xhr.responseText);
-
-        }
+        });
 
     });
 
 });
-
