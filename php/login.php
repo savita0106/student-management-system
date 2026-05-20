@@ -59,7 +59,7 @@ if ($result->num_rows > 0) {
     $redis = new Redis();
 
     $redis->connect(
-        getenv("REDIS_HOST"),
+        "tls://" . getenv("REDIS_HOST"),
         (int)getenv("REDIS_PORT")
     );
 

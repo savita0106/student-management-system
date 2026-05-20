@@ -10,7 +10,7 @@ $session_id = $_POST["session_id"];
 $redis = new Redis();
 
 $redis->connect(
-    getenv("REDIS_HOST"),
+    "tls://" . getenv("REDIS_HOST"),
     (int)getenv("REDIS_PORT")
 );
 
