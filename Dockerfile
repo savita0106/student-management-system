@@ -5,7 +5,8 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     && docker-php-ext-install mysqli \
     && pecl install redis \
-    && docker-php-ext-enable redis
+    && pecl install mongodb \
+    && docker-php-ext-enable redis mongodb
 
 COPY . /var/www/html/
 
