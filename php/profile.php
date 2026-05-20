@@ -28,7 +28,7 @@ if ($email == false) {
 }
 
 $client = new MongoDB\Client(
-    "mongodb://localhost:27017"
+    getenv("MONGO_URI")
 );
 
 $database = $client->reg_db;
