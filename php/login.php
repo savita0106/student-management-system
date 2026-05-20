@@ -6,6 +6,8 @@ $conn = mysqli_init();
 
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
 
+$conn->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
+
 try {
 
     mysqli_real_connect(
@@ -14,14 +16,16 @@ try {
         getenv("DB_USER"),
         getenv("DB_PASSWORD"),
         getenv("DB_NAME"),
-        (int)getenv("DB_PORT")
+        (int)getenv("DB_PORT"),
+        NULL,
+        MYSQLI_CLIENT_SSL
     );
 
 } catch (mysqli_sql_exception $e) {
 
     echo json_encode([
         "status" => "failed",
-        "message" => "database connection failed"
+        "message" => $e->getMessage()
     ]);
 
     exit();
