@@ -1,5 +1,4 @@
 <?php
-
 require "../vendor/autoload.php";
 
 $client = new MongoDB\Client(
@@ -7,5 +6,4 @@ $client = new MongoDB\Client(
 );
 
 echo "mongodb connected";
-
 ?>

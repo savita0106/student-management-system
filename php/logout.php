@@ -1,9 +1,7 @@
 <?php
-
 header("Content-Type: application/json");
 
 $session_id = $_POST["session_id"];
-
 $redis = new Redis();
 
 $redis->connect(
@@ -19,5 +17,4 @@ echo json_encode([
     "status" => "success",
     "message" => "logged out"
 ]);
-
 ?>

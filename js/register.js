@@ -1,17 +1,12 @@
 $(document).ready(function () {
-
     $("#register").click(function () {
-
         let name = $("#name").val();
         let email = $("#email").val();
         let pswd = $("#pswd").val();
 
         $.ajax({
-
             url: "../php/register.php",
-
             type: "POST",
-
             data: {
                 name: name,
                 email: email,
@@ -19,11 +14,9 @@ $(document).ready(function () {
             },
 
             success: function (response) {
-
                 console.log(response);
 
                 if (response.status == "success") {
-
                     localStorage.setItem(
                         "name",
                         name
@@ -40,23 +33,14 @@ $(document).ready(function () {
                     );
 
                     window.location.href = "profile.html";
-
                 } else {
-
                     $("#result").html(response.message);
-
                 }
-
             },
 
             error: function (xhr) {
-
                 $("#result").html(xhr.responseText);
-
             }
-
         });
-
     });
-
 });

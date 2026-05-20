@@ -1,15 +1,10 @@
 <?php
-
 header("Content-Type: application/json");
-
 $conn = mysqli_init();
-
 mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
-
 $conn->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
 
 try {
-
     mysqli_real_connect(
         $conn,
         getenv("DB_HOST"),
@@ -22,14 +17,12 @@ try {
     );
 
 } catch (mysqli_sql_exception $e) {
-
     echo json_encode([
         "status" => "failed",
         "message" => $e->getMessage()
     ]);
 
     exit();
-
 }
 
 $email = $_POST["email"];
@@ -47,15 +40,11 @@ $stmt->bind_param(
 );
 
 $stmt->execute();
-
 $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
-
     $row = $result->fetch_assoc();
-
     $session_id = "session:" . uniqid();
-
     $redis = new Redis();
 
     $redis->connect(
@@ -79,14 +68,10 @@ if ($result->num_rows > 0) {
         "name" => $row["name"],
         "email" => $row["email"]
     ]);
-
 } else {
-
     echo json_encode([
         "status" => "failed",
         "message" => "invalid email or password"
     ]);
-
 }
-
 ?>
